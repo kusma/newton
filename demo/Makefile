@@ -2,6 +2,9 @@
 
 ifeq ($(strip $(DEVKITPRO)),)
 $(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPro)
+else
+DEVKITARM = $(DEVKITPRO)/devkitARM
+export PATH := $(DEVKITARM)/bin:$(PATH)
 endif
 
 #GBAEMU    ?= $(DEVKITPRO)/gbaemu/vba.exe

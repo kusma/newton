@@ -8,6 +8,7 @@
 #include <gba_sprites.h>
 #include <gba_input.h>
 #include <stdio.h>
+#include <string.h>
 #include "../fb.h"
 #include "../grid.h"
 #include "../grideffects.h"

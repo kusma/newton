@@ -1,0 +1,21 @@
+
+
+TODO:
+
+quantisize: 
+  - Fix dithering
+  - Image up-side down
+
+saveact:
+  - one color missing when loading into photoshop
+  
+ 
+reduce:
+  - intensity is wrong in output palette 
+  
+  
+  
+  
+  
+  
+ebump filler mirrored

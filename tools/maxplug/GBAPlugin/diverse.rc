@@ -1,0 +1,142 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Australia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_GBASCENEMTL DIALOGEX 0, 0, 217, 110
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Filler",IDC_STATIC,7,7,100,52
+    CONTROL         "Tex256",IDC_FILLER_TEX256,"Button",BS_AUTORADIOBUTTON,9,
+                    16,40,10
+    CONTROL         "Envbump",IDC_FILLER_ESPENBUMP,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,9,26,45,10
+    CONTROL         "Normalmap (linear pal)",IDC_FILLER_NMAP,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,9,36,87,10
+    GROUPBOX        "UvGen",IDC_STATIC,110,7,100,33
+    CONTROL         "MapChannel",IDC_UVGEN_MAPCHAN,"Button",
+                    BS_AUTORADIOBUTTON,112,16,55,10
+    CONTROL         "Env",IDC_UVGEN_ENV,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,112,26,28,10
+    LTEXT           "Primary",IDC_STATIC_PRIMARY,7,66,71,8
+    CONTROL         "Custom1",IDC_TEX_PRIMARY,"CustButton",WS_TABSTOP,80,65,
+                    130,11
+    LTEXT           "Secondary",IDC_STATIC_SECONDARY,7,80,71,8
+    CONTROL         "Custom1",IDC_TEX_SECONDARY,"CustButton",WS_TABSTOP,80,
+                    79,130,11
+    LTEXT           "Bumpsource",IDC_STATIC_SECONDARY2,7,93,40,8
+    CONTROL         "Custom1",IDC_BUMPSRC,"CustButton",WS_TABSTOP,111,93,99,
+                    11
+    CONTROL         "Camera",IDC_BUMPSRC_CAMERA,"CustButton",WS_TABSTOP,80,
+                    93,28,11
+    CONTROL         "onexone",IDC_CHECK_ONEXONE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,47,44,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_GBASCENEMTL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 104
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_PARAMS_GENERAL      "General Parameters"
+END
+
+#endif    // English (Australia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

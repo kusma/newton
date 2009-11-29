@@ -1,0 +1,56 @@
+graphics list:
+- scroller
+- locked, loaded and ready to roll
+- part two picture
+
+first part:
+00:00 - 00:07 - blink screen from white to black on each drum-kick - or speakers
+00:07 - 00:22 - speaker-head        +
+00:22 - 00:37 - 3d speaker head     +
+00:37 - 00:45 - gridexpander deform
+00:45 - 01:10 - mercury
+01:15 - 01:23 - show ground not cracked up
+01:23 - 01:30 - ground cracking up
+01:30 - 01:45 - growing stuff (if it should last longer, something more needs to happen -- camera-changes might suffice)
+01:45 - 02:00 - growing stuff variation (see last point)? -- blink at "clang" sounds
+02:00 - 02:15 - infzoomer           +
+02:15 - 02:30 - sphere-in-tunnel    +
+02:30 - 02:35 - wait for part two (bitch)
+
+second part:
+00:00 - 00:12 - black screen
+00:10 - 00:12 - break kids are here
+00:12 - 00:32 - poelse (more camera changes)
+00:32 - 00:38 - locked loaded and ready to roll (scroller?)
+00:38 - 01:02 - sphere grid, interrupted by skateboard-stuff
+01:02 - 01:46 - big-ass scroller
+01:46 - 02:08 - telos part
+02:08 - 02:31 - lattice
+
+
+"finished" unused parts:
+- fd-planes
+- mirror scene
+- mercury scene
+
+"finished" unused parts (need exporting):
+- ground cracking up
+- sfc scroller in corridor (see scroller2.avi on the webdav-thingie)
+- blob running down some drain-thingy
+
+unfinished scheduled parts:
+- growing stuff (needs max-exporter and direction)
+- parallax-scroller (some placeholder graphics still, need to be longer and more entertaining)
+
+upcoming un-scheduled parts:
+- slimy blob in front of camera (blob is modelled, need code)
+- slime-breaker (needs code for prototype, and if it looks good enough - real graphics and a background-effect)
+
+random finished but so far unused data that can be tossed in where needed:
+- skateboard-overlays
+- 3d-ish sfc logo
+- gangstah pictures of guns and sneakers stolen from Mr.Internet ;)
+
+absolutely missing stuff:
+- LOGOS!
+- A picture of kekkonen spanking Matt-Matt.

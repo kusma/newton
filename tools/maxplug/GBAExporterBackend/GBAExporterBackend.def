@@ -1,0 +1,7 @@
+LIBRARY GBAExporterBackend
+EXPORTS
+	DoExport			@1
+
+
+SECTIONS
+	.data READ WRITE

@@ -1,0 +1,129 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Australia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SETTINGS DIALOGEX 0, 0, 259, 133
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "GBA Exporter"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,202,112,50,14
+    EDITTEXT        IDC_EDIT_FILENAME2,70,7,181,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    LTEXT           "Filename",IDC_STATIC,7,10,29,8
+    LTEXT           "Path",IDC_STATIC,7,31,16,8
+    EDITTEXT        IDC_EDIT_PATH,70,28,181,12,ES_AUTOHSCROLL | WS_DISABLED
+    CONTROL         "Precalc culling",IDC_CHECK_PRECALC,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,134,49,61,14
+    EDITTEXT        IDC_EDIT_FPS,90,48,24,13,ES_AUTOHSCROLL,WS_EX_RIGHT
+    LTEXT           "bogus",IDC_STATIC,7,51,20,8
+    EDITTEXT        IDC_EDIT_SUPERSAMPLING,90,62,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER,WS_EX_RIGHT
+    LTEXT           "Supersampling",IDC_STATIC,8,66,47,8
+    CONTROL         "Force object space",IDC_CHECK_FORCE_OBJECT_SPACE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,134,63,111,14
+    EDITTEXT        IDC_EDIT_LIGHTBIAS,90,77,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER,WS_EX_RIGHT
+    LTEXT           "bogus",IDC_STATIC,7,81,20,8
+    LTEXT           "Mask picture",IDC_STATIC,7,95,41,8
+    EDITTEXT        IDC_EDIT_MASKEFIL,90,92,162,13,ES_AUTOHSCROLL,
+                    WS_EX_RIGHT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 252
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 126
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (Australia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

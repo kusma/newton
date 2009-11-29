@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "adpcm", "adpcm.vcproj", "{02E5AB27-2CCC-4C6A-B054-7D000635907E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02E5AB27-2CCC-4C6A-B054-7D000635907E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{02E5AB27-2CCC-4C6A-B054-7D000635907E}.Debug|Win32.Build.0 = Debug|Win32
+		{02E5AB27-2CCC-4C6A-B054-7D000635907E}.Release|Win32.ActiveCfg = Release|Win32
+		{02E5AB27-2CCC-4C6A-B054-7D000635907E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

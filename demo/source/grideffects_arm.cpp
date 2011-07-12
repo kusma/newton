@@ -11,7 +11,7 @@ extern Vector3 direction[GRID_WIDTH * GRID_HEIGHT];
 #include "sphere.h"
 #include "plane.h"
 
-/*
+
 void grideffects::plane(grid g, const Matrix4x4 &m, const Plane &plane, int fog)
 {
 
@@ -22,17 +22,13 @@ void grideffects::plane(grid g, const Matrix4x4 &m, const Plane &plane, int fog)
 	grid_node *n = &g[0];
 
 	for (u32 y = GRID_HEIGHT; y; --y)
-	{
-		for (u32 x = GRID_WIDTH; x; --x)
-		{
+		for (u32 x = GRID_WIDTH; x; --x) {
 			Vector3 &d = *dir++;
-			
 			const Ray3 ray(origin, m.rotate_vector(d));
-//			const Ray3 ray(origin, d);
-			
+
 			fixed16 t = intersect_ray_plane(ray, plane);
 			Vector3 intersection = ray.o + ray.d * t;
-			
+
 			n->u = intersection.x.get_val() >> 2;
 			n->v = intersection.y.get_val() >> 2;
 
@@ -41,11 +37,10 @@ void grideffects::plane(grid g, const Matrix4x4 &m, const Plane &plane, int fog)
 			n->col = MIN(MAX(shade, 1 << 15), ((7 << 16) + (1 << 15)));
 			n++;
 		}
-	}
 }
-*/
 
-void grideffects::sphere(grid g, const Matrix4x4 &m, int fog) __attribute__((section(".iwram1"), long_call));
+
+void grideffects::sphere(grid g, const Matrix4x4 &m, int fog);
 
 void grideffects::sphere(grid g, const Matrix4x4 &m, int fog)
 {
@@ -108,7 +103,7 @@ void grideffects::sphere(grid g, const Matrix4x4 &m, int fog)
 	}
 }
 
-#if 0
+#if 1
 void grideffects::flat(grid g, s32 xscroll, s32 yscroll)
 {
 	grid_node *n = &g[0];
@@ -123,8 +118,9 @@ void grideffects::flat(grid g, s32 xscroll, s32 yscroll)
 			n->u = (y << 11) + (fixed_sin((n->v << 1) + (n->u << 2)) >> 4) + yscroll << 1;
 			n->v = (x << 11) + (fixed_sin((n->u << 2) - (n->v << 1)) >> 4) + xscroll << 1;
 
-			n->u = (y << 11) + (fixed_sin((n->v << 0) + (n->u << 1)) >> 4) + yscroll << 0;
-			n->v = (x << 11) + (fixed_sin((n->u << 1) - (n->v << 0)) >> 4) + xscroll << 0;
+			n->u = ((y << 11) + (fixed_sin((n->v << 0) + (n->u << 1)) >> 4) + yscroll) << 1;
+			n->v = ((x << 11) + (fixed_sin((n->u << 1) - (n->v << 0)) >> 4) + xscroll) << 1;
+			n->col = 0;
 			n++;
 		}
 	}

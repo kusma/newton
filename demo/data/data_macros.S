@@ -11,6 +11,7 @@
 datafile \filename&_tileset_raw data/\filename&.tileset.raw
 datafile \filename&_tileset_pal data/\filename&.tileset.pal
 datafile \filename&_oam data/\filename&.oam
+datafile \filename&_cov data/\filename&.cov
 .endm
 
 .macro datafilearray from=0, to=5, symbol_basename, file_basename, ext=raw

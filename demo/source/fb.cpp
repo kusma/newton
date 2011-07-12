@@ -9,7 +9,9 @@ namespace fb {
 	u16 tempxpal[256*4] EWRAM_DATA;
 	u8* bb = (u8*)*MODE5_BB;
 	u8* fb = (u8*)*MODE5_FB;
-	
+	const u8 *curr_cov = NULL;
+	const OBJATTR *curr_oam = NULL;
+
 	void reset_buffers()
 	{
 		if (REG_DISPCNT&BACKBUFFER)
@@ -57,10 +59,13 @@ namespace fb {
 		while (REG_VCOUNT>x);
 		while (REG_VCOUNT<x);
 	}
-	void overlay(const void* oam, const void* spr, const u16* pal) {
-		if (pal) CpuFastSet(pal, OBJ_COLORS, 512/4);
-		CpuSet(oam,  OAM, (75 * sizeof(OAM[0])) / 2);
+
+	void overlay(const void *oam, const void *spr, const u16 *pal, const u8 *cov) {
+		if (pal)
+			CpuFastSet(pal, OBJ_COLORS, 512/4);
 		CpuFastSet(spr, BITMAP_OBJ_BASE_ADR, 8 * 8 * 128 / 2);
+		curr_cov = cov;
+		curr_oam = (const OBJATTR *)oam;
 	}
 
 

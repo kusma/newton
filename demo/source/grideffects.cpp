@@ -29,8 +29,8 @@ void grideffects::init(void)
 			Vector3 dir(
 				fixed16::make_raw(int(x - (GRID_WIDTH / 2))),
 				fixed16::make_raw(int(y - (GRID_HEIGHT / 2))),
-				fixed16::make_raw(40)
-//				fixed16::make_raw(70)
+//				fixed16::make_raw(40)
+				fixed16::make_raw(70)
 			);
 
 			dir.x *= SCREEN_WIDTH;

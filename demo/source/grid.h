@@ -20,7 +20,7 @@ typedef struct {
 
 typedef grid_node grid[GRID_WIDTH * GRID_HEIGHT];
 
-void draw_grid(u8 *target, grid g, const u8 *const texture) IWRAM_CODE;
+void draw_grid(u8 *target, grid g, const u8 *const texture, const u8 *cov) IWRAM_CODE;
 void draw_parallax_grid(u8 *target, grid g, const u8 *const texture, const u8 *height) IWRAM_CODE;
 
 #endif /* _GRID_H_ */

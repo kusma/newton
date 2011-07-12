@@ -5,280 +5,127 @@
 #include <gba_input.h>
 #include <gba_console.h>
 #include "tunnel.h"
-#include "parts.h"
 #include "grideffects.h"
 #include "fb.h"
+#include <pimp_gba.h>
 
 #include "support.h"
 #include "palette.h"
 
 // #define LAMER_VERSION
 
-#include "part.h"
-#include "adpcm.h"
 #include "timer.h"
 #include "noise.h"
-
-extern u8 tune_adpcm[];
-extern u8 tune2_adpcm[];
 
 #ifndef REG_WAITCNT
 #define REG_WAITCNT (*(vu16*)(REG_BASE + 0x0204))
 #endif
 
-extern const u8  start01_tex[];
-extern const u16 start01_pal[];
-extern const u8  start02_tex[];
-extern const u16 start02_pal[];
-extern const u8  start03_tex[];
-extern const u16 start03_pal[];
-extern const u8  start04_tex[];
-extern const u16 start04_pal[];
+extern const u8 microunits_mod_bin[];
+extern const u8 sample_bank_bin[];
 
-static volatile bool enable_noise = true;
+extern const u16 tex1_pal[];
+extern const u8 tex1_tex[];
+extern const u16 tex2_pal[];
+extern const u8 tex2_tex[];
 
-#include "linearcurve.h"
-static const LinearCurve::keyframe flash_keyframes[] = 
-{
-	{ 0.00, 31.00 },
-	{ 0.24, 0.00 },
-	{ 0.25, 31.00 },
-	{ 0.49, 0.00 },
-	{ 0.50, 31.00 },
-	{ 0.74, 0.00 },
-	{ 0.75, 31.00 },
-	{ 0.99, 0.00 },
-	{ 1.00, 31.00 },
-	{ 3.99, 0.00 },
-	{ 4.00, 31.00 },
-	{ 4.49, 0.00 },
-	{ 4.50, 31.00 },
-	{ 4.99, 0.00 },
-	{ 5.00, 31.00 },
-	{ 5.24, 0.00 },
-	{ 5.25, 31.00 },
-	{ 5.99, 0.00 },
-	{ 6.00, 31.00 },
-	{ 7.99, 0.00 },
-	{ 8.00, 31.00 },
-	{ 8.24, 0.00 },
-	{ 8.25, 31.00 },
-	{ 8.49, 0.00 },
-	{ 8.50, 31.00 },
-	{ 8.74, 0.00 },
-	{ 8.75, 31.00 },
-	{ 8.99, 0.00 },
-	{ 9.00, 31.00 },
-	{ 12.00, 0.00 },
+DECLARE_OVERLAY(mrt_001)
+DECLARE_OVERLAY(mrt_002)
+DECLARE_OVERLAY(mrt_003)
+DECLARE_OVERLAY(mrt_004)
+DECLARE_OVERLAY(mrt_005)
+DECLARE_OVERLAY(mrt_006)
+DECLARE_OVERLAY(mrt_007)
+DECLARE_OVERLAY(mrt_008)
+DECLARE_OVERLAY(mrt_009)
+DECLARE_OVERLAY(mrt_010)
+
+static grid g EWRAM_DATA;
+
+extern const u16 intro1_pal[];
+extern const u8 intro1_tex[];
+extern const u16 intro2_pal[];
+extern const u8 intro2_tex[];
+extern const u16 intro3_pal[];
+extern const u8 intro3_tex[];
+extern const u16 intro4_pal[];
+extern const u8 intro4_tex[];
+extern const u16 intro5_pal[];
+extern const u8 intro5_tex[];
+extern const u16 intro6_pal[];
+extern const u8 intro6_tex[];
+extern const u16 intro7_pal[];
+extern const u8 intro7_tex[];
+extern const u16 intro8_pal[];
+extern const u8 intro8_tex[];
+extern const u16 intro9_pal[];
+extern const u8 intro9_tex[];
+extern const u16 credits_pal[];
+extern const u8 credits_tex[];
+
+static const u8 *intro_texs[] = {
+	intro2_tex, intro3_tex, intro4_tex, intro5_tex,
+	intro6_tex, intro7_tex, intro8_tex, intro9_tex
 };
-static LinearCurve flash_curve = LINEARCURVE(flash_keyframes);
+static const u16 *intro_pals[] = {
+	intro2_pal, intro3_pal, intro4_pal, intro5_pal,
+	intro6_pal, intro7_pal, intro8_pal, intro9_pal
+};
 
-static void vblank()
+static int blanks = 0;
+static int flash = 0;
+static int scroll = 0;
+static void vblank(void)
 {
-	fixed16 beat = timer::getBeat();
-	if (beat > fixed16(16))
-	{
-//		CpuFastSet(start04_pal, BG_COLORS, (512) / 4);
-//		int fade = ((timer::getBeat() - 16) * 0.5).get_val() >> 8;
-		fixed16 local_beat = beat - 16;
-		int fade = (local_beat * 128);
-		if (fade > 256) fade = 256;
-		palette::boost(BG_COLORS, start04_pal, 256, -fade);
+	pimp_gba_vblank();
+	blanks++;
+	if (flash > 0) 
+		flash--;
+	if (scroll > 0)
+		scroll--;
+
+	REG_BG2Y = -scroll << 8;
+	REG_BG2X = 0;
+	int order = pimp_gba_get_order();
+	if (order >= 7 && order < 9) {
+		REG_BG2Y = ((rand() & 15) - 8) * ((rand() & 15) - 8) * ((rand() & 15) - 8);
+		REG_BG2X = ((rand() & 15) - 8) * ((rand() & 15) - 8) * ((rand() & 15) - 8);
 	}
-	
-	if (enable_noise)
-	{
-//		noise::update();
-		int val = flash_curve.getValue(timer::getBeat());
-		BG_COLORS[0] = RGB5(val, val,val);
-		REG_BLDCNT = BIT(10) | BIT(6) | BIT(4);
-		REG_BLDALPHA = (0) | (0 << 8);
-		
-//		palette::boost(BG_COLORS, start01_pal, 256, -100);
+
+
+	if (fb::curr_oam) {
+		for (int i = 0; i < 128; ++i) {
+			OBJATTR tmp = fb::curr_oam[i];
+			int y = tmp.attr0 & 0xFF;
+			tmp.attr0 &= ~0xFF;
+			tmp.attr0 |= OBJ_Y(y + scroll);
+			OAM[i] = tmp;
+		}
+	}
+	pimp_gba_frame();
+}
+
+static void sync_callback(int type, int param)
+{
+	if (type == PIMP_CALLBACK_NOTE) {
+		if (param == 1)
+			flash = 16;
+		if (param == 2)
+			scroll = 16;
 	}
 }
 
-static void init()
+int main()
 {
-//	noise::setup();
-	SetMode(MODE_4 | BG2_ON | OBJ_ENABLE | OBJ_1D_MAP);
- 	REG_BLDCNT = BIT(12) | BIT(2) | BIT(13);
-//	REG_BLDCNT = BIT(10) | BIT(6) | BIT(4) | BIT(13);
-}
-
-void part1()
-{
-	// tune config
-	const float bpm = 128.0;
-	const float start_beat = 0; //  162 + 32;
-	
-	// don't touch ;)
-	const int   start_frame = int(start_beat / (float(bpm) / (FRAMES_PR_SECOND * 60)));
-	
-	// init tune
-	adpcm_gba_init(tune_adpcm);
-	timer::setBpm(bpm);
-	adpcm_gba_set_frame(start_frame);
-	
-	part::set_part(init, vblank);
-	
-	VBlankIntrWait();
-	CpuFastSet(start01_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(start01_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	part::swap();
-	while (timer::getBeat() < 12);
-	enable_noise = false;
-
-	VBlankIntrWait();
-	CpuFastSet(start02_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(start02_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	part::swap();
-	while (timer::getBeat() < fixed16(12.5));
-	
-	VBlankIntrWait();
-	CpuFastSet(start03_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(start03_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	part::swap();
-	while (timer::getBeat() < fixed16(13.25));
-	
-	VBlankIntrWait();
-	CpuFastSet(start04_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(start04_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	part::swap();
-	while (timer::getBeat() < 18);
-
-	parts::radial(    18,  82);
-//	parts::radial(    0,  82); // or: apheregrid preview and then mirror
-//	parts::grid(     82,  98);
-	parts::cubegrid( 82,  98);
-
-
-//	parts::mercury(82, 146);
-
-	//parts::skate(98, 118, 0); // ?? mirror thing?
-
-	parts::mercury(98, 162);
-//	parts::lattice(98, 162);
-
-
-	parts::growy(   162, 226);
-
-
-	parts::mirror(   226, 258); // placeholder for greets/mirror
-
-	// corridor thing
-	parts::zoomer(  258, 290);
-	parts::sphere(  290, 320);
-
-	parts::message(320, 336, 1);
-	
-	while (timer::getBeat() < 336);
-}
-
-extern const u16 sfc_bp_bkah_01_pal[];
-extern const u16 sfc_bp_bkah_02_pal[];
-extern const u16 sfc_bp_bkah_03_pal[];
-extern const u16 sfc_bp_bkah_04_pal[];
-
-extern const u16 sfc_bp_bkah_01_tex[];
-extern const u16 sfc_bp_bkah_02_tex[];
-extern const u16 sfc_bp_bkah_03_tex[];
-extern const u16 sfc_bp_bkah_04_tex[];
-
-void part2()
-{
-	// tune config
-	const float bpm = 173.0;
-	const float start_beat = 0;
-	
-	// don't touch ;)
-	const int   start_frame = int(start_beat / (float(bpm) / (FRAMES_PR_SECOND * 60)));
-	
-	// init tune
-	adpcm_gba_init(tune2_adpcm);
-	timer::setBpm(bpm);
-	adpcm_gba_set_frame(start_frame);
-	
-	VBlankIntrWait();
-	BG_COLORS[0] = 0;
-	int svart = 0;
-	CpuFastSet(&svart, fb::bb, ((GBA_WIDTH * GBA_HEIGHT) / 4) | FILL);
-
-	while (timer::getBeat() < 32);
-
-	CpuFastSet(sfc_bp_bkah_01_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(sfc_bp_bkah_01_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	fb::swap();
-	while (timer::getBeat() < 33);
-		
-	CpuFastSet(sfc_bp_bkah_02_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(sfc_bp_bkah_02_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	fb::swap();
-	while (timer::getBeat() < 34);
-
-	CpuFastSet(sfc_bp_bkah_03_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(sfc_bp_bkah_03_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	fb::swap();
-	while (timer::getBeat() < fixed16(34.5));
-
-	CpuFastSet(sfc_bp_bkah_04_pal, BG_COLORS, (512) / 4);
-	CpuFastSet(sfc_bp_bkah_04_tex, fb::bb, (GBA_WIDTH * GBA_HEIGHT) / 4);
-	fb::swap();
-	while (timer::getBeat() < 36);
-	
-	parts::poelse(          36, 100);
-
-	parts::lockedloaded(100, 108);
-//	while (timer::getBeat() < 108);
-
-	parts::skate(108, 109, 0, 0); // testing
-	parts::spheregrid(109, 109+15,     500 << 8);
-	parts::skate(109+15, 109+16, 0, 20); // testing
-	parts::spheregrid(109+16, 109+31,  350003); // 2100032);
-	parts::skate(109+31, 109+32, 0, 8); // testing
-	parts::spheregrid(109+32, 109+47,  910012);
-	parts::skate(109+47, 109+48, 0, 13); // testing
-	parts::spheregrid(109+48, 109+63,  100002);
-//	parts::skate(109+63, 109+64, 0, 0); // testing
-
-	parts::skate(109+63, 180, 2, 0); // testing
-
-//	parts::spheregrid(109, 180);
-
-
-	parts::parallax_scroll(180, 306);
-	parts::telos(        306, 338);
-	parts::telos(        338, 370);
-	parts::lattice(      370, 434);
-
-	parts::skate(434, 434+12, 1, 0); // testing
-
-
-	parts::message(434+12, 434+12+16, 0);
-
-
-	//	parts::mercury(370, 434);
-
-//	parts::cubegrid(1);
-//	parts::grid(1);
-//	parts::test(1);
-//	parts::spheregrid(1);
-//	parts::plane(1);
-
-	while (timer::getBeat() < 450);
-}
-
-int main() {
 	grideffects::init();
-//	init_tunnel();
-	
+
 	/* setup default states */
 	REG_WAITCNT = 0x46d6;
-	
+
 	/* clear bits to be conditionally set later on */
 	REG_WAITCNT &= ~(((1 << 3) - 1) << 1);
 	REG_WAITCNT &= ~(1 << 14);
-	
+
 	/* enable ROM prefetch */
 	REG_WAITCNT = 1 << 14;
 
@@ -291,19 +138,176 @@ int main() {
 
 	irqInit();
 	fb::reset();
-/*		
-	consoleInit(0, 4, 0, NULL, 0, 15);
+	pimp_gba_init((const pimp_module *)microunits_mod_bin, sample_bank_bin);
+	pimp_gba_set_pos(0, 0);
+	pimp_gba_set_callback(sync_callback);
 
-	BG_COLORS[0] = RGB5(0, 0, 0);
-	BG_COLORS[241] = RGB5(31, 31, 31);
-	REG_DISPCNT = MODE_0 | BG0_ON; */
-	irqSet(IRQ_VBLANK, part::vblank);
+	irqSet(IRQ_VBLANK, vblank);
 	irqEnable(IRQ_VBLANK);
 
-	part1();
-	part2();
-	
-	adpcm_gba_close();
+	fb::reset();
+	CpuFastSet(intro1_tex, fb::bb, (GBA_HEIGHT * GBA_WIDTH) / 4);
+	fb::setMode(MODE_4 | BG2_ON);
+	VBlankIntrWait();
+	fb::swap();
+	int fade = 0;
+	while (pimp_gba_get_order() == 0) {
+		int boost = fade << 1;
+		boost += (sin(fixed16(blanks) / 50).get_val() * fade) >> 17;
+		if (boost < 0)
+			boost = 0;
+//		palette::boost(BG_COLORS, intro1_pal, 256, (fade + (sin(fixed16(blanks) / 50) * 100) * 3);
+		palette::boost(BG_COLORS, intro1_pal, 256, boost);
+		VBlankIntrWait();
+		if (fade < 128)
+			fade++;
+	}
+
+	while (pimp_gba_get_order() < 3) {
+		int img = (pimp_gba_get_order() - 1) * 4 + pimp_gba_get_row() / 16;
+		CpuFastSet(intro_texs[img], fb::bb, (GBA_HEIGHT * GBA_WIDTH) / 4);
+		VBlankIntrWait();
+		int col = RGB5(flash, flash, flash);
+		palette::add(BG_COLORS, intro_pals[img], 256, col);
+		fb::swap();
+	}
+
+redo:
+	fb::setMode(MODE_4 | BG2_ON | OBJ_ON | OBJ_1D_MAP);
+	REG_BLDCNT = 0;
+
+	u16 temp1[256], temp2[256];
+	palette::make_fadepal(temp1, tex1_pal, 0);
+	palette::make_fadepal(temp2, tex2_pal, 0);
+
+	while (pimp_gba_get_order() < 7 || pimp_gba_get_order() > 8 && pimp_gba_get_order() < 17) {
+		int order = pimp_gba_get_order();
+		if (order > 14)
+			order = 14;
+		if (order < 7)
+			order -= 3;
+		if (order > 8)
+			order += 5;
+
+
+		if (pimp_gba_get_order() <= 14) {
+			switch (order % 10) {
+			case 0:
+				OVERLAY(mrt_001);
+				break;
+			case 1:
+				OVERLAY(mrt_002);
+				break;
+			case 2:
+				OVERLAY(mrt_003);
+				break;
+			case 3:
+				OVERLAY(mrt_004);
+				break;
+			case 4:
+				OVERLAY(mrt_005);
+				break;
+			case 5:
+				OVERLAY(mrt_006);
+				break;
+			case 6:
+				OVERLAY(mrt_007);
+				break;
+			case 7:
+				OVERLAY(mrt_008);
+				break;
+			case 8:
+				OVERLAY(mrt_009);
+				break;
+			case 9:
+				OVERLAY(mrt_010);
+				break;
+			}
+		}
+		fixed16 time = fixed16(blanks) >> 5;
+		Vector3 rot(
+			-cos(time >> 3) >> 1,
+			fixed16(3.1415 * 2), // -cos(time >> 2) >> 3,
+			-cos(time >> 3)
+		);
+		rot.normalize();
+
+		Vector3 trans(
+			sin(time >> 2) >> 2,
+			cos(time >> 2) >> 2,
+			fixed16(1) - cos(time >> 1) * fixed16(0.05)
+		);
+
+		Matrix4x4 mrot;
+		mrot.rotate(rot);
+		Matrix4x4 mtrans;
+		mtrans.translate(trans);
+
+		Matrix4x4 m = mrot * mtrans;
+
+		Plane p(Vector3(0, 0, 1), 3);
+		switch ((order / 2) % 3) {
+		case 0:
+			grideffects::sphere(g, m, (3 << 15));
+			break;
+		case 1:
+			grideffects::plane(g, m, p, (3 << 15));
+			break;
+		case 2:
+			grideffects::flat(g, 0, sin(time * fixed16(0.00095)).get_val());
+			break;
+		}
+
+		int col = RGB5(flash, flash, flash);
+
+
+		if (pimp_gba_get_order() > 14) {
+			draw_grid(fb::bb, g, tex1_tex, fb::curr_cov);
+			static int fade = 256;
+			palette::boost(BG_COLORS, temp1, 256, fade);
+			palette::boost(OBJ_COLORS, mrt_010_tileset_pal, 16, fade);
+			if (fade > 0)
+				fade -= 2;
+		} else {
+			if ((order / 2) & 1) {
+				draw_grid(fb::bb, g, tex1_tex, fb::curr_cov);
+				palette::add(BG_COLORS, temp1, 256, col);
+			} else {
+				draw_grid(fb::bb, g, tex2_tex, fb::curr_cov);
+				palette::add(BG_COLORS, temp2, 256, col);
+			}
+		}
+		fb::swap();
+	}
+
+	if (pimp_gba_get_order() >= 15)
+		goto kaare_sa_jeg_skulle_gjoere_det;
+
+	CpuFastSet(credits_tex, fb::bb, (GBA_HEIGHT * GBA_WIDTH) / 4);
+	fb::setMode(MODE_4 | BG2_ON);
+	VBlankIntrWait();
+	fb::swap();
+	while (pimp_gba_get_order() < 9) {
+		int boost = 256;
+		boost += (sin(fixed16(blanks) / 50).get_val() * 100) >> 17;
+		boost *= (rand() & 31) * (rand() & 31) * (rand() & 31);
+		boost *= 4;
+		boost >>= 17;
+		if (boost < 0)
+			boost = 0;
+		palette::boost(BG_COLORS, credits_pal, 256, boost);
+		VBlankIntrWait();
+	}
+
+	goto redo;
+
+kaare_sa_jeg_skulle_gjoere_det:
+
+	BG_COLORS[0] = (1 << 5) - 1;
+	while (1)
+		; /* nothing */
+
+	pimp_gba_close();
 
 	irqDisable(IRQ_VBLANK);
 	fb::reset();

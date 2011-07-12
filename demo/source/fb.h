@@ -2,6 +2,7 @@
 
 #include "base.h"
 #include <gba_video.h>
+#include <gba_sprites.h>
 
 namespace fb {
 	extern u8* fb;
@@ -27,7 +28,7 @@ namespace fb {
 	INLINE void err() {
 		bb[0] = 5;
 	}
-	void overlay(const void* oam, const void* spr, const u16* pal=NULL);
+	void overlay(const void* oam, const void* spr, const u16* pal=NULL, const u8 *cov = NULL);
 	
 	
 	INLINE void plot_pixel(u8 *bb, int x, int y, int color)
@@ -42,11 +43,14 @@ namespace fb {
 
 	extern u16 temppal[256] EWRAM_DATA;
 	extern u16 tempxpal[256*4] EWRAM_DATA;
+	extern const u8 *curr_cov;
+	extern const OBJATTR *curr_oam;
 };
 
 #define DECLARE_OVERLAY(name) \
 extern const u8  name##_tileset_raw[]; \
 extern const u16 name##_tileset_pal[]; \
-extern const u16 name##_oam[];
+extern const u16 name##_oam[]; \
+extern const u8 name##_cov[];
 
-#define OVERLAY(name) fb::overlay(name##_oam, name##_tileset_raw, name##_tileset_pal)
+#define OVERLAY(name) fb::overlay(name##_oam, name##_tileset_raw, name##_tileset_pal, name##_cov)

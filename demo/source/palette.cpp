@@ -37,7 +37,6 @@ namespace palette
 
 	void boost(u16 *dst, const u16 *src, u32 len, s32 boost_amount)
 	{
-		boost_amount += 256;
 		for (u32 i = len; i; --i)
 		{
 			u16 col = *src++;

@@ -24,10 +24,10 @@ Tile::Tile(
 {
 	int sx = 1 << scale_x;
 	int sy = 1 << scale_y;
-	
+
 	unsigned char *dst2 = (unsigned char *)data;
 	unsigned char *src2 = (unsigned char *)src;
-	
+
 	for (int y = 0; y < (TILE_HEIGHT >> scale_y); ++y)
 	{
 		for (int x = 0; x < (TILE_WIDTH >> scale_x); ++x)

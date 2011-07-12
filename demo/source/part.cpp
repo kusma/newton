@@ -1,6 +1,6 @@
 #include "part.h"
 #include "fb.h"
-#include "adpcm.h"
+#include <pimp_gba.h>
 
 static part::callback init_func = NULL;
 static part::callback vblank_func = NULL;
@@ -8,9 +8,9 @@ static part::callback next_vblank_func = NULL;
 
 void part::vblank(void)
 {
-	adpcm_gba_vblank();
+	pimp_gba_vblank();
 	if (NULL != vblank_func) vblank_func();
-	adpcm_gba_frame();
+	pimp_gba_frame();
 }
 
 void part::swap()

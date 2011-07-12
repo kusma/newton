@@ -49,10 +49,13 @@ public:
 
 	bool Save(const char *filename)
 	{
+		bool ret;
 		assert(dib != NULL);
 		FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(filename);
 		FreeImage_FlipVertical(dib);
-		return (TRUE == FreeImage_Save(fif, dib, filename));
+		ret = (TRUE == FreeImage_Save(fif, dib, filename));
+		FreeImage_FlipVertical(dib);
+		return ret;
 	}
 
 	bool Load(const char *filename)
@@ -60,6 +63,9 @@ public:
 		FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(filename);
 		FIBITMAP *temp = FreeImage_Load(fif, filename);
 		if (temp == NULL) return false;
+
+		colors = FreeImage_GetColorsUsed(temp);
+		colors = 1 << FreeImage_GetBPP(temp);
 
 		dib = FreeImage_ConvertTo32Bits(temp);
 		FreeImage_Unload(temp);
@@ -72,6 +78,7 @@ public:
 
 	FIBITMAP *GetFIBitmap() { return dib; }
 
+	int colors;
 private:
 	FIBITMAP *dib;
 };

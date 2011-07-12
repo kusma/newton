@@ -15,7 +15,6 @@
 #include "../palette.h"
 #include "../part.h"
 #include "../timer.h"
-#include "../noise.h"
 
 static s32 currents[GBA_HEIGHT] EWRAM_DATA;
 
@@ -27,9 +26,8 @@ static bool block = true;
 static fixed16 endBeat;
 static void vblank()
 {
-	if (block) return;
-	
-	noise::update();
+	if (block)
+		return;
 
 	fixed16 beat = timer::getBeat() / 4;
 	fixed16 flash = fixed16(1) - (beat & 0xFFFF);
@@ -70,7 +68,6 @@ static void init()
 	REG_BLDCNT = BIT(10) | BIT(6) | BIT(4) | BIT(13);
 	REG_BLDALPHA = (16) | (16<<8);
 	REG_BLDCNT = 0;
-	noise::setup();
 	REG_BLDCNT = BIT(10) | BIT(6) | BIT(4) | BIT(13);
 	REG_BLDALPHA = (16) | (16<<8);
 
@@ -90,8 +87,7 @@ namespace parts
 	{
 		endBeat=end;
 		part::set_part(init, vblank);
-		memcpy(__iwram_overlay_start, __load_start_iwram1, ((int)__load_stop_iwram1) - ((int)__load_start_iwram1));
-		
+
 		block = false;
 		while (timer::getBeat() < end)
 		{
@@ -122,14 +118,11 @@ namespace parts
 			
 			part::swap();
 		}
-		
 		block = true;
-		
+
 		int svart=0;
 		CpuFastSet(&svart, BG_COLORS, FILL|(512/4));
 		CpuFastSet(&svart, fb::bb, FILL|(240*160/4));
 		CpuFastSet(&svart, fb::fb, FILL|(240*160/4));
-
-		memcpy(__iwram_overlay_start, __load_start_iwram0, ((int)__load_stop_iwram0) - ((int)__load_start_iwram0));
 	}
 };

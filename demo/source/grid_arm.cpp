@@ -15,8 +15,8 @@
 
 #define UV_FINAL(uv) ((uv & 0xFF00) | (uv >> 24))
 
-static void draw_quad(register u16 *target, const grid_node *n, const u8 *const texture) __attribute__((section(".iwram1"), long_call));
-void draw_grid(u8 *target, grid g, const u8 *const texture) __attribute__((section(".iwram1"), long_call));
+static void draw_quad(register u16 *target, const grid_node *n, const u8 *const texture);
+void draw_grid(u8 *target, grid g, const u8 *const texture, const u8 *cov);
 
 static void draw_quad(register u16 *target, const grid_node *n, const u8 *const texture)
 {
@@ -300,16 +300,17 @@ static void draw_quad(register u16 *target, const grid_node *n, const u8 *const 
 	}
 }
 
-void draw_grid(u8 *target, grid g, const u8 *const texture)
+void draw_grid(u8 *target, grid g, const u8 *const texture, const u8 *cov)
 {
 	grid_node *n = &g[0];
 	*target = 100; // no$gba error -> fps-counter :)
 
-	for (u32 y = GRID_HEIGHT - 1; y; --y, ++n)
+	for (u32 y = 0; y < GRID_HEIGHT - 1; ++y, ++n)
 	{
-		for (u32 x = GRID_WIDTH - 1; x; --x, ++n)
+		for (u32 x = 0; x < GRID_WIDTH - 1; ++x, ++n)
 		{
-			draw_quad((u16*)target, n, texture);
+			if (!cov || !cov[y * (GRID_WIDTH - 1) + x])
+				draw_quad((u16*)target, n, texture);
 			target += GRID_NODE_WIDTH;
 		}
 		target += (GRID_NODE_HEIGHT * GBA_WIDTH) - GBA_WIDTH;

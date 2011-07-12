@@ -44,52 +44,22 @@ else
 	LDFLAGS  += -s
 endif
 
-LIBS = $(LIBGBA)/lib/libgba.a
+LIBS = $(LIBGBA)/lib/libgba.a lib/libpimp_gba.a
 
 ARM   = -marm
 THUMB = -mthumb
 
-TARGET = sfc-mc
+TARGET = bzh-lessons
 OBJS   = main.o gba_assert.o math.o fb.o palette.o part.o
 OBJS  += matrix4x4.o
-OBJS  += tilepool.o
 
 # adpcm player
-OBJS += adpcm.iwram.o adpcm_gba.o
 OBJS += timer.o
 
 # datafile
 OBJS += data.o
 
-# effects
-OBJS += fjalloc.o decomp_arm.iwram.o flikk.o
-
-OBJS += 3dthen.o 3dthen_arm.iwram.o poly_subpixel_arm.iwram.o antialias_arm.iwram.o
-OBJS += glow.o glow_arm.iwram.o
-
 OBJS += grid_arm.iwram.o grideffects_arm.iwram.o grideffects.o
-OBJS += infzoom_asm.o
-OBJS += plant.o
-OBJS += noise.o
-
-# parts
-OBJS += parts/message.o
-OBJS += parts/skate.o
-OBJS += parts/mercury.o
-OBJS += parts/growy.o
-OBJS += parts/mirror.o
-OBJS += parts/telos.o
-OBJS += parts/cubegrid.o
-OBJS += parts/lattice.o
-OBJS += parts/lockedloaded.o
-
-OBJS += parts/sphere.o
-OBJS += parts/radial.o
-OBJS += parts/parallax_scroll.o
-OBJS += parts/zoomer.o
-OBJS += parts/poelse.o
-OBJS += parts/spheregrid.o
-OBJS += parts/spheregrid_arm.iwram.o
 
 DEPSDIR = $(BUILDDIR)
 OFILES  = $(foreach file,$(OBJS),$(BUILDDIR)/$(notdir $(file)))
@@ -108,10 +78,10 @@ $(BUILDDIR):
 
 $(BUILDDIR)/$(TARGET).elf: $(BUILDDIR) $(OFILES) $(LIBGBA)/lib/libgba.a
 
-$(BUILDDIR)/data.o: data/data.S data/* data/tune.adpcm data/tune2.adpcm
+$(BUILDDIR)/data.o: data/data.S data/* data/tex1.tex data/intro1.tex
 
 clean:
-	$(RM) $(OFILES) $(DEPENDS) $(TARGET).gba $(BUILDDIR)/$(TARGET).elf $(TARGET).map data/scenes.S $(SCENES)
+	$(RM) $(OFILES) $(DEPENDS) $(TARGET).gba $(BUILDDIR)/$(TARGET).elf $(TARGET).map
 
 run: $(TARGET).gba
 	$(GBAEMU) $(TARGET).gba
